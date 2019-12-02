@@ -18,10 +18,13 @@ var rect = svg
 console.log("before accessing to enter selection:", rect);
 
 // for each of the virtual element in the enter selection, create a rect and append to the dom. And set the attr.
-rect
+const added = rect
   .enter()
   .append("rect")
   .attr("width", d => d.width)
   .attr("height", d => d.height)
   .attr("fill", d => d.fill)
   .attr("x", d => d.x);
+console.log("added:", added);
+
+console.log("merged:", added.merge(rect));
