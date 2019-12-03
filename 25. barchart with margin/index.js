@@ -15,6 +15,11 @@ const graph = svg
   .attr("height", graphHeight)
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
+const xAxisGroup = graph
+  .append("g")
+  .attr("transform", `translate(0,${graphHeight})`);
+const yAxisGroup = graph.append("g");
+
 d3.json("menu.json").then(data => {
   // join the data to rects
 
@@ -23,7 +28,7 @@ d3.json("menu.json").then(data => {
   const y = d3
     .scaleLinear()
     .domain([0, d3.max(data, d => d.orders)])
-    .range([0, 500]);
+    .range([0, graphHeight]);
   console.log(y(400));
 
   // min, max, extent which is [min, max]
@@ -56,4 +61,11 @@ d3.json("menu.json").then(data => {
     .attr("height", d => y(d.orders))
     .attr("fill", "orange")
     .attr("x", d => x(d.name));
+
+  // create the axes
+  const xAxis = d3.axisBottom(x);
+  const yAxis = d3.axisLeft(y);
+
+  xAxisGroup.call(xAxis);
+  yAxisGroup.call(yAxis);
 });
