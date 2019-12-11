@@ -42,6 +42,8 @@ xAxisGroup
   .attr("text-anchor", "end")
   .attr("fill", "orange");
 
+const t = d3.transition().duration(500);
+
 // update function
 const update = data => {
   // 1. update domain in scales(properties that do rely on data)
@@ -58,10 +60,12 @@ const update = data => {
   //4. updated current attr of elements that already in the dom
   rects
     .attr("width", x.bandwidth())
-    .attr("height", d => graphHeight - y(d.orders)) // since we flip the y scale so the true height is graphHeight - existing height
     .attr("fill", "orange")
-    .attr("x", d => x(d.name))
-    .attr("y", d => y(d.orders)); // move all the bars to bottom, and shift distance is exactly y(d.orders)
+    .attr("x", d => x(d.name));
+  // comment because use merge method
+  // .transition(t)
+  // .attr("y", d => y(d.orders)) // move all the bars to bottom, and shift distance is exactly y(d.orders)
+  // .attr("height", d => graphHeight - y(d.orders));
 
   //5. append the enter selection to the dom
   rects
@@ -72,8 +76,8 @@ const update = data => {
     .attr("fill", "orange")
     .attr("x", d => x(d.name))
     .attr("y", graphHeight)
-    .transition()
-    .duration(500)
+    .merge(rects) // anything below will apply both elements already in dom and enter selection
+    .transition(t)
     .attr("y", d => y(d.orders))
     .attr("height", d => graphHeight - y(d.orders));
 
