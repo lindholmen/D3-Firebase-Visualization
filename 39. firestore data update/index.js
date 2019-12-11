@@ -42,7 +42,7 @@ xAxisGroup
   .attr("text-anchor", "end")
   .attr("fill", "orange");
 
-const t = d3.transition().duration(500);
+const t = d3.transition().duration(1000); // make it simple to update
 
 // update function
 const update = data => {
@@ -78,6 +78,7 @@ const update = data => {
     .attr("y", graphHeight)
     .merge(rects) // anything below will apply both elements already in dom and enter selection
     .transition(t)
+    .attrTween("width", widthTween)
     .attr("y", d => y(d.orders))
     .attr("height", d => graphHeight - y(d.orders));
 
@@ -117,3 +118,12 @@ db.collection("dishes").onSnapshot(res => {
 
   update(data);
 });
+
+const widthTween = d => {
+  // 0 表示starting position, d.bandwidth()为ending position, create interpolation function
+  let i = d3.interpolate(0, x.bandwidth());
+  // return a function that receives time ticket:
+  return function(t) {
+    return i(t); // t is from 0 to 1
+  };
+};
