@@ -40,16 +40,20 @@ const arcPath = d3
 
 //console.log(arcPath(angles[0])); // this is the quote str inside path d = "..."
 
-// Set ordinal scale
+// Set ordinal scale as output range
+// d3["schemeSet3"] return an array of different colours
+const colour = d3.scaleOrdinal(d3["schemeSet3"]);
 
 // update
 const update = data => {
-  //console.log(data);
+  //update the domain
+  colour.domain(data.map(item => item.cause_name));
 
   //join pie data to path element
   const paths = graph.selectAll("path").data(pie(data));
-
   //console.log(paths.enter());
+  console.log(pie(data));
+
   paths
     .enter()
     .append("path")
@@ -62,7 +66,8 @@ const update = data => {
       }
     )
     .attr("stroke", "#fff")
-    .attr("stroke-width", 3);
+    .attr("stroke-width", 3)
+    .attr("fill", d => colour(d.data.cause_name));
 };
 
 // data array and firestore
