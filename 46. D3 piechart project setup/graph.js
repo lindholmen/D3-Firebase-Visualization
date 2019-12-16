@@ -46,14 +46,27 @@ const colour = d3.scaleOrdinal(d3["schemeSet3"]);
 
 // update
 const update = data => {
-  //update the domain
+  //1.update the domain
   colour.domain(data.map(item => item.cause_name));
 
-  //join pie data to path element
+  //2. join pie data to path element
   const paths = graph.selectAll("path").data(pie(data));
   //console.log(paths.enter());
   console.log(pie(data));
 
+  //3. remove the unwanted shapes
+  paths.exit().remove();
+
+  //4. updated the current attr in the dom
+  paths.attr("d", d =>
+    // this d is each __data__ in the array
+    {
+      //console.log(d);
+      return arcPath(d); // 也可以忽略d, 直接写arcPath
+    }
+  );
+
+  //5. append the enter selection
   paths
     .enter()
     .append("path")
