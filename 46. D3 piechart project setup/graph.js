@@ -4,7 +4,7 @@ const cent = { x: dims.width / 2 + 5, y: dims.height / 2 + 5 };
 const svg = d3
   .select(".canvas")
   .append("svg")
-  .attr("width", dims.width + 150)
+  .attr("width", dims.width + 250)
   .attr("height", dims.height + 150);
 
 const graph = svg
@@ -44,27 +44,51 @@ const arcPath = d3
 // d3["schemeSet3"] return an array of different colours
 const colour = d3.scaleOrdinal(d3["schemeSet3"]);
 
+// legend set up
+const legendGroup = svg
+  .append("g")
+  .attr("transform", `translate(${dims.width + 40},10)`);
+
+const legend = d3
+  .legendColor()
+  .shape("circle")
+  .shapePadding(10)
+  .scale(colour);
+
 // update
 const update = data => {
   //1.update the domain
   colour.domain(data.map(item => item.cause_name));
 
-  //2. join pie data to path element
+  //1.x update and call legend:
+  legendGroup.call(legend);
+  legendGroup.selectAll("text").attr("fill", "white");
+
+  //2. join pie data *(enhanced ddata) to path element
   const paths = graph.selectAll("path").data(pie(data));
   //console.log(paths.enter());
   console.log(pie(data));
 
   //3. remove the unwanted shapes
-  paths.exit().remove();
+  paths
+    .exit()
+    .transition()
+    .duration(750)
+    .attrTween("d", arcTweenExit)
+    .remove();
 
   //4. updated the current attr in the dom
-  paths.attr("d", d =>
-    // this d is each __data__ in the array
-    {
-      //console.log(d);
-      return arcPath(d); // 也可以忽略d, 直接写arcPath
-    }
-  );
+  paths
+    .attr("d", d =>
+      // this d is each __data__ in the array
+      {
+        //console.log(d);
+        return arcPath(d); // 也可以忽略d, 直接写arcPath
+      }
+    )
+    .transition()
+    .duration(750)
+    .attrTween("d", arcTweenUpdate);
 
   //5. append the enter selection
   paths
@@ -80,7 +104,13 @@ const update = data => {
     )
     .attr("stroke", "#fff")
     .attr("stroke-width", 3)
-    .attr("fill", d => colour(d.data.cause_name));
+    .attr("fill", d => colour(d.data.cause_name))
+    .each(function(d) {
+      this._current = d;
+    }) // apply function on each of element
+    .transition()
+    .duration(750)
+    .attrTween("d", arcTweenEnter); // Using this can skip setting d attr using arcPath above
 };
 
 // data array and firestore
@@ -108,3 +138,35 @@ db.collection("accidents").onSnapshot(res => {
   });
   update(data);
 });
+
+const arcTweenEnter = d => {
+  // 扇形区域：starting position d.endAngle, ending postion is startAngel
+  // ending postion is changing all the time, after t(ticket) it will become i(t),
+  // then use arcPath to sett d attr
+  var i = d3.interpolate(d.endAngle, d.startAngle);
+  return function(t) {
+    d.startAngle = i(t);
+    return arcPath(d);
+  };
+};
+
+const arcTweenExit = d => {
+  var i = d3.interpolate(d.startAngle, d.endAngle);
+  return function(t) {
+    d.startAngle = i(t);
+    return arcPath(d);
+  };
+};
+
+// use this
+function arcTweenUpdate(d) {
+  // d is updated data, _current is the old data
+  //console.log(this._current, d);
+  //interpolate between the two objects
+  var i = d3.interpolate(this._current, d); // because we dont know if it going to shrink or increase
+  this._current = i(1);
+
+  return function(t) {
+    return arcPath(i(t));
+  };
+}
