@@ -111,6 +111,12 @@ const update = data => {
     .transition()
     .duration(750)
     .attrTween("d", arcTweenEnter); // Using this can skip setting d attr using arcPath above
+
+  // add event listener
+  graph
+    .selectAll("path")
+    .on("mouseover", handlemouseover)
+    .on("mouseout", handlemouseout);
 };
 
 // data array and firestore
@@ -170,3 +176,21 @@ function arcTweenUpdate(d) {
     return arcPath(i(t));
   };
 }
+
+// event handlers
+// d is the enhanced data, i is index, n is all "path" elements.
+const handlemouseover = (d, i, n) => {
+  //console.log(d);
+  //console.log(n[i]);
+  d3.select(n[i])
+    .transition("new_transition_name_not_to_interfere_with_other_transition")
+    .duration(500)
+    .attr("fill", "#fff");
+};
+
+const handlemouseout = (d, i, n) => {
+  d3.select(n[i])
+    .transition("new_transition_name_not_to_interfere_with_other_transition")
+    .duration(500)
+    .attr("fill", d => colour(d.data.cause_name));
+};
