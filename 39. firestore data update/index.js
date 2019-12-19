@@ -75,7 +75,7 @@ const update = data => {
     .attr("height", 0)
     .attr("fill", "orange")
     .attr("x", d => x(d.name))
-    .attr("y", graphHeight)
+    // .attr("y", graphHeight)
     .merge(rects) // anything below will apply both elements already in dom and enter selection
     .transition(t)
     .attrTween("width", widthTween)
