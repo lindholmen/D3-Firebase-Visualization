@@ -35,12 +35,12 @@ const yAxis = d3
   .ticks(10)
   .tickFormat(d => d + " orders");
 
-// update x axis text
-xAxisGroup
-  .selectAll("text")
-  .attr("transform", `rotate(-40)`)
-  .attr("text-anchor", "end")
-  .attr("fill", "orange");
+// // update x axis text
+// xAxisGroup
+//   .selectAll("text")
+//   .attr("transform", `rotate(-40)`)
+//   .attr("text-anchor", "end")
+//   .attr("fill", "orange");
 
 const t = d3.transition().duration(1000); // make it simple to update
 
@@ -85,6 +85,13 @@ const update = data => {
   //6. call axes based on the new data
   xAxisGroup.call(xAxis);
   yAxisGroup.call(yAxis);
+
+  // update x axis text
+  xAxisGroup
+    .selectAll("text")
+    .attr("transform", `rotate(-40)`)
+    .attr("text-anchor", "end")
+    .attr("fill", "orange");
 };
 
 var data = [];
