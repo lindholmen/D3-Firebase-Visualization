@@ -55,6 +55,20 @@ const legend = d3
   .shapePadding(10)
   .scale(colour);
 
+// tooltip set up
+const tip = d3
+  .tip()
+  .attr("class", "tip card")
+  .html(d => {
+    let content = `<div class="cause_name"> ${d.data.cause_name} </div>`;
+    content += `<div class="case_number"> ${d.data.case_number} </div>`;
+    content += `<div class="delete"> Click slice to delete </div>`;
+    console.log(content);
+    return content;
+  });
+
+graph.call(tip);
+
 // update
 const update = data => {
   //1.update the domain
@@ -115,8 +129,21 @@ const update = data => {
   // add event listener
   graph
     .selectAll("path")
-    .on("mouseover", handlemouseover)
-    .on("mouseout", handlemouseout);
+    .on("mouseover", (d, i, n) => {
+      tip.show(d, n[i]); // n[i] equals to this.
+      handlemouseover(d, i, n);
+    })
+    .on("mouseout", (d, i, n) => {
+      tip.hide(d, n[i]);
+      handlemouseout(d, i, n);
+    })
+    .on("click", d => {
+      //console.log(d);
+      const id = d.data.id;
+      db.collection("accidents")
+        .doc(id)
+        .delete();
+    });
 };
 
 // data array and firestore
