@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+  <!--<![endif]-->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Fitness tracker</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <link rel="stylesheet" href="style-fitness-tracker.css" />
+  </head>
+  <body class="grey darken-4">
+    <div class="nav z-depth-0">
+      <div class="section center">
+        <h3 class="white-text center">- AlltVäntar™ Fitness Tracker -</h3>
+      </div>
+    </div>
+
+    <div class="section center">
+      <p class="grey-text flow-text">Your Fitness, Our Careness.</p>
+    </div>
+
+    <div class="container section">
+      <div class="row">
+        <div class="col s12 l5">
+          <button class="active" data-activity="Cycling">Cycling</button>
+          <button data-activity="Running">Running</button>
+          <button data-activity="Swimming">Swimming</button>
+          <button data-activity="Walking">Cycling</button>
+        </div>
+
+        <div class="col s12 l6 push-l1">
+          <div class="canvas"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- 3 cols on the right and 3 cols on the left -->
+        <form class="col m6 push-m3">
+          <p class="flow-text grey-text center">
+            How much <span>Cycling</span> have you done today?
+          </p>
+          <input
+            type="text"
+            class="grey-text"
+            id="Cycling"
+            placeholder="Distance in KM"
+          />
+          <p class="pink-text center error text-lighten-1">error</p>
+        </form>
+      </div>
+    </div>
+    <!--[if lt IE 7]>
+      <p class="browsehappy">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="#">upgrade your browser</a> to improve your experience.
+      </p>
+    <![endif]-->
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-analytics.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyDCyL32brZuSY3Pd4M1sh1BFw5bG-vzJJc",
+        authDomain: "udemy-firebase-viz.firebaseapp.com",
+        databaseURL: "https://udemy-firebase-viz.firebaseio.com",
+        projectId: "udemy-firebase-viz",
+        storageBucket: "udemy-firebase-viz.appspot.com",
+        messagingSenderId: "158007327635",
+        appId: "1:158007327635:web:225adc05301511b9c94666",
+        measurementId: "G-Z9QBJWLW67"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+      const db = firebase.firestore();
+    </script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <script src="index-fitness-tracker.js"></script>
+    <script src="graph-fitness-tracker.js"></script>
+  </body>
+</html>
