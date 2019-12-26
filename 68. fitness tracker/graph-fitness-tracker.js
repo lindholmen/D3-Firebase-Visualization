@@ -1,4 +1,4 @@
-const margin = { top: 40, right: 20, bottom: 50, left: 100 };
+const margin = { top: 0, right: 20, bottom: 60, left: 100 };
 const lineGraphWidth = 560 - margin.right - margin.left;
 const lineGraphHeight = 400 - margin.top - margin.bottom;
 
@@ -14,25 +14,42 @@ const lineGraph = fitnessSVG
   .attr("height", lineGraphHeight)
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
-// scale using scaleTime() for x
-const xFitness = d3.scaleTime().range([0, graphWidth]);
-const yFitness = d3.scaleLinear().range([graphHeight, 0]);
+// create scale using scaleTime() for x and scaleLinear() for y
+const xFitness = d3.scaleTime().range([0, lineGraphWidth]);
+const yFitness = d3.scaleLinear().range([lineGraphHeight, 0]);
 
-const xAxisGroupFitness = lineGraphHeight
-  .append("g")
-  .attr("class", "x-axis-fitness")
-  .attr("transform", `translate(0,${graphHeight})`);
-
-const yAxisGroupFitness = lineGraph.append("g").attr("class", "y-axis-fitness");
-
-const xAxisFitness = d3.axisBottom(xFitness);
+// create the axes
+const xAxisFitness = d3
+  .axisBottom(xFitness)
+  .ticks(4)
+  .tickFormat(d3.timeFormat("%b %d"));
 const yAxisFitness = d3
   .axisLeft(yFitness)
-  .ticks(10)
-  .tickFormat(d => d + " km");
+  .ticks(4)
+  .tickFormat(d => d + " m");
+
+// create axis group
+const xAxisGroupFitness = lineGraph
+  .append("g")
+  .attr("class", "x-axis-fitness")
+  .attr("transform", `translate(0,${lineGraphHeight})`);
+const yAxisGroupFitness = lineGraph.append("g").attr("class", "y-axis-fitness");
 
 // update
-const update = data => {};
+const update = data => {
+  // 1. update domain in scales(properties that do rely on data)
+  xFitness.domain(d3.extent(data, d => new Date(d.date)));
+  yFitness.domain([0, d3.max(data, d => d.distance)]);
+
+  // 2. call axes and update axis group
+  xAxisGroupFitness.call(xAxisFitness);
+  yAxisGroupFitness.call(yAxisFitness);
+
+  xAxisGroupFitness
+    .selectAll("text")
+    .attr("transform", `rotate(-40)`)
+    .attr("text-anchor", "end");
+};
 
 // data array and firestore
 var fitnessData = [];

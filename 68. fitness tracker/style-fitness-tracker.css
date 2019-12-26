@@ -5,10 +5,10 @@
 
 button {
   background: #333;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   width: 100%;
-  padding: 16px;
-  font: 1.8em !important;
+  padding: 25px;
+  font-size: 1.4em !important;
   color: #fff;
   border: 0;
   border-radius: 4px;
@@ -25,6 +25,19 @@ form span {
 
 .gaptip {
   margin: 30px;
+}
+
+.x-axis-fitness path,
+.y-axis-fitness path,
+.x-axis-fitness line,
+.y-axis-fitness line {
+  stroke: #ccc;
+}
+
+.x-axis-fitness text,
+.y-axis-fitness text {
+  fill: #ccc;
+  font-size: 10pt;
 }
 
 /* The snackbar - position it at the bottom and in the middle of the screen */
