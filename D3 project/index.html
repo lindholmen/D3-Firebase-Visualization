@@ -102,6 +102,8 @@
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
+    <!-- Add additional services that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
     <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-analytics.js"></script>
@@ -124,6 +126,39 @@
       const db = firebase.firestore();
       // const settings = { timestampsInSnapshots: true };
       // db.settings(settings);
+
+      var auth = firebase.auth();
+      auth.uid = "fakeuid";
+      var userUid = auth.uid;
+      // var promise = auth.createUserWithEmailAndPassword(
+      //   "abcde@gmail.com",
+      //   "k1k1k1k1k32d"
+      // );
+
+      // // If there is any error stop the process.
+      // promise.catch(function(error) {
+      //   var errorCode = error.code;
+      //   console.log(`GOT ERROR: ` + errorCode);
+      //   if (errorCode == "auth/weak-password") return; // password to weak. Minimal 6 characters
+      //   if (errorCode == "auth/email-already-in-use") return; // Return a email already in use error
+      // });
+
+      // // When no errors create the account
+      // promise.then(function() {
+      //   userUid = auth.currentUser.uid;
+      //   console.log("uid:", userUid);
+      // db.collection("users")
+      //   .doc(userUid)
+      //   .set({
+      //     email: "abcd@gmail.com",
+      //     emailVertified: false,
+      //     name: "htmlUser",
+      //     online: false,
+      //     onlock: false,
+      //     password: "k1k1k1k1k32d"
+      //   });
+      // });
+      //https://stackoverflow.com/questions/54485656/how-do-i-link-auth-users-to-collection-in-firestore
     </script>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>

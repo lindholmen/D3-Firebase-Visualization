@@ -12,6 +12,8 @@ form.addEventListener("submit", e => {
       case_number: parseInt(casenumber.value)
     };
 
+    db.collection("accidents").doc(userUid);
+
     db.collection("accidents")
       .add(item)
       .then(res => {
@@ -37,6 +39,8 @@ form2.addEventListener("submit", e => {
       publicationtype: publicationtype.value,
       publicationnumber: parseInt(publicationnumber.value)
     };
+
+    db.collection("accidents").doc(userUid);
 
     db.collection("publications")
       .add(item)
