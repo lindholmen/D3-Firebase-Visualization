@@ -1,4 +1,4 @@
-const margin = { top: 0, right: 20, bottom: 60, left: 100 };
+const margin = { top: 20, right: 20, bottom: 60, left: 100 };
 const lineGraphWidth = 560 - margin.right - margin.left;
 const lineGraphHeight = 400 - margin.top - margin.bottom;
 
@@ -21,11 +21,11 @@ const yFitness = d3.scaleLinear().range([lineGraphHeight, 0]);
 // create the axes
 const xAxisFitness = d3
   .axisBottom(xFitness)
-  .ticks(4)
+  .ticks(5)
   .tickFormat(d3.timeFormat("%b %d"));
 const yAxisFitness = d3
   .axisLeft(yFitness)
-  .ticks(4)
+  .ticks(5)
   .tickFormat(d => d + " m");
 
 // create axis group
@@ -40,6 +40,26 @@ const update = data => {
   // 1. update domain in scales(properties that do rely on data)
   xFitness.domain(d3.extent(data, d => new Date(d.date)));
   yFitness.domain([0, d3.max(data, d => d.distance)]);
+
+  // 2. create circles for objects
+  const circles = lineGraph.selectAll("circle").data(data);
+
+  // remove unwanted circles
+  circles.exit().remove();
+
+  // update existing points
+  circles
+    .attr("cx", d => xFitness(new Date(d.date)))
+    .attr("cy", d => yFitness(d.distance));
+
+  // add new points
+  circles
+    .enter()
+    .append("circle")
+    .attr("r", 4)
+    .attr("cx", d => xFitness(new Date(d.date)))
+    .attr("cy", d => yFitness(d.distance))
+    .attr("fill", "#ccc");
 
   // 2. call axes and update axis group
   xAxisGroupFitness.call(xAxisFitness);
