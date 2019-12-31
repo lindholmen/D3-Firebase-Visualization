@@ -84,6 +84,8 @@
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
+    <!-- Add additional services that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
     <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-analytics.js"></script>
@@ -104,6 +106,12 @@
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
       const db = firebase.firestore();
+
+      var auth = firebase.auth();
+      auth.uid = "fakeuid";
+      var userUid = auth.uid;
+      db.collection("accidents").doc(userUid);
+
       // const settings = { timestampsInSnapshots: true };
       // db.settings(settings);
     </script>
