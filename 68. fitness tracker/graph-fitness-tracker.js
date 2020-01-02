@@ -37,6 +37,8 @@ const yAxisGroupFitness = lineGraph.append("g").attr("class", "y-axis-fitness");
 
 // update
 const update = data => {
+  data = data.filter(item => item.activity == activity);
+
   // 1. update domain in scales(properties that do rely on data)
   xFitness.domain(d3.extent(data, d => new Date(d.date)));
   yFitness.domain([0, d3.max(data, d => d.distance)]);
@@ -72,7 +74,7 @@ const update = data => {
 };
 
 // data array and firestore
-var fitnessData = [];
+let fitnessData = [];
 
 db.collection("activities").onSnapshot(res => {
   res.docChanges().forEach(change_item => {

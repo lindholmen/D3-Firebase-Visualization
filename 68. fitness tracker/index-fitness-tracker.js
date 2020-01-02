@@ -22,6 +22,9 @@ btns.forEach(btn => {
     //console.log("id: ", input.getAttribute("id"));
 
     formActivity.innerHTML = activity;
+
+    // call update function
+    update(fitnessData);
   });
 });
 
