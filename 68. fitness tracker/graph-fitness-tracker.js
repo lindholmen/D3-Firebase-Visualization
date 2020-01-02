@@ -35,26 +35,49 @@ const xAxisGroupFitness = lineGraph
   .attr("transform", `translate(0,${lineGraphHeight})`);
 const yAxisGroupFitness = lineGraph.append("g").attr("class", "y-axis-fitness");
 
+// d3 line generator
+const line = d3
+  .line()
+  .x(function(d) {
+    return xFitness(new Date(d.date));
+  })
+  .y(function(d) {
+    return yFitness(d.distance);
+  });
+
+// append path elmenet for line
+const path = lineGraph.append("path");
+
 // update
 const update = data => {
   data = data.filter(item => item.activity == activity);
+  // 0. sort data based on date (otherwith drawline will have problem)
+  data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // 1. update domain in scales(properties that do rely on data)
   xFitness.domain(d3.extent(data, d => new Date(d.date)));
   yFitness.domain([0, d3.max(data, d => d.distance)]);
 
-  // 2. create circles for objects
+  //2  update path data but must pass in array data
+  path
+    .data([data])
+    .attr("fill", "none")
+    .attr("stroke", "#00bfa5")
+    .attr("stroke-width", 2)
+    .attr("d", line);
+
+  // 3. create circles for objects
   const circles = lineGraph.selectAll("circle").data(data);
 
-  // remove unwanted circles
+  // 4.remove unwanted circles
   circles.exit().remove();
 
-  // update existing points
+  // 5. update existing points
   circles
     .attr("cx", d => xFitness(new Date(d.date)))
     .attr("cy", d => yFitness(d.distance));
 
-  // add new points
+  // 6. add new points
   circles
     .enter()
     .append("circle")
@@ -63,7 +86,7 @@ const update = data => {
     .attr("cy", d => yFitness(d.distance))
     .attr("fill", "#ccc");
 
-  // 2. call axes and update axis group
+  // 7. call axes and update axis group
   xAxisGroupFitness.call(xAxisFitness);
   yAxisGroupFitness.call(yAxisFitness);
 
