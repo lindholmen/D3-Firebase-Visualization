@@ -48,6 +48,37 @@ const line = d3
 // append path elmenet for line
 const path = lineGraph.append("path");
 
+// create dotted line group
+const dottedLineGroup = lineGraph
+  .append("g")
+  .attr("class", "lines")
+  .style("opacity", 0);
+
+const xdottedLine = dottedLineGroup
+  .append("line")
+  .attr("stroke", "#aaa")
+  .attr("stroke-width", 1)
+  .attr("stroke-dasharray", 4);
+
+const ydottedLine = dottedLineGroup
+  .append("line")
+  .attr("stroke", "#aaa")
+  .attr("stroke-width", 1)
+  .attr("stroke-dasharray", 4);
+
+// tooltip
+const tip = d3
+  .tip()
+  .attr("class", "tip card")
+  .html(d => {
+    let content = `<div class="cause_name"> ${d.distance} </div>`;
+    content += `<div class="delete"> Click slice to delete </div>`;
+    console.log(content);
+    return content;
+  });
+
+lineGraph.call(tip);
+
 // update
 const update = data => {
   data = data.filter(item => item.activity == activity);
@@ -81,10 +112,53 @@ const update = data => {
   circles
     .enter()
     .append("circle")
-    .attr("r", 4)
+    .attr("r", 8)
     .attr("cx", d => xFitness(new Date(d.date)))
     .attr("cy", d => yFitness(d.distance))
     .attr("fill", "#ccc");
+
+  lineGraph
+    .selectAll("circle")
+    .on("mouseover", (d, i, n) => {
+      tip.show(d, n[i]);
+      d3.select(n[i])
+        .transition()
+        .duration(300)
+        .attr("r", 16)
+        .attr("fill", "#fff");
+
+      dottedLineGroup.style("opacity", 1);
+      xdottedLine
+        .attr("x1", 0)
+        .attr("x2", xFitness(new Date(d.date)))
+        .attr("y1", yFitness(d.distance))
+        .attr("y2", yFitness(d.distance));
+
+      ydottedLine
+        .attr("x1", xFitness(new Date(d.date)))
+        .attr("x2", xFitness(new Date(d.date)))
+        .attr("y1", yFitness(d.distance))
+        .attr("y2", lineGraphHeight);
+    })
+    .on("mouseout", (d, i, n) => {
+      tip.hide(d, n[i]);
+      d3.select(n[i])
+        .transition()
+        .duration(300)
+        .attr("r", 8)
+        .attr("fill", "#ccc");
+      dottedLineGroup.style("opacity", 0);
+    })
+    .on("click", (d, i, n) => {
+      //console.log(d);
+      const id = d.id;
+      tip.hide(d, n[i]);
+      dottedLineGroup.style("opacity", 0);
+
+      db.collection("activities")
+        .doc(id)
+        .delete();
+    });
 
   // 7. call axes and update axis group
   xAxisGroupFitness.call(xAxisFitness);
@@ -102,7 +176,7 @@ let fitnessData = [];
 db.collection("activities").onSnapshot(res => {
   res.docChanges().forEach(change_item => {
     const doc = { ...change_item.doc.data(), id: change_item.doc.id };
-    console.log(doc);
+    //console.log(doc);
     switch (change_item.type) {
       case "added":
         fitnessData.push(doc);
